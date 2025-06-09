@@ -4,8 +4,7 @@ OpenEMR Data Export Tool
 
 This script exports patient data from an OpenEMR database to Excel files.
 """
-from lib.sql_reader import connect_to_db, extract_patient_data, extract_history_data
-from lib.excel_export import export_to_excel
+from lib.export_utils import extract_data, connect_to_db, export_to_excel
 
 
 def main():
@@ -23,18 +22,26 @@ def main():
             database='openemr'
         )
         
-        # Extract patient data
-        patient_df = extract_patient_data(engine)
-        print(f"Extracted {len(patient_df)} patient records")
-        
-        # Extract history data
-        history_df = extract_history_data(engine)
-        print(f"Extracted {len(history_df)} history records")
-        
         # Organize dataframes for export
         dataframes = {
-            'patient_data': patient_df,
-            'history_data': history_df
+            'patient_data': extract_data(engine, 'patient_data', include_cols=[
+                'pubpid', 
+                'DOB', 
+                'sex', 
+                'sexual_orientation', 
+                'gender_identity', 
+                'status', 
+                'street', 
+                'deceased_date', 
+                'deceased_reason'
+            ]),
+            'history_data': extract_data(engine, 'history_data'),
+            'issues': extract_data(engine, 'lists'),
+            'prescriptions': extract_data(engine, 'prescriptions'),
+            'vitals': extract_data(engine, 'form_vitals'),
+            'encounters': extract_data(engine, 'form_encounter'),
+            'clinical_notes': extract_data(engine, 'form_clinical_notes'),
+            'SOAP': extract_data(engine, 'form_soap'),
         }
         
         # Export to Excel
