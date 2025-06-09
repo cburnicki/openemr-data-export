@@ -12,7 +12,7 @@ def connect_to_db(host='localhost', user='openemr', password='openemr', database
     Connect to the MariaDB database
     
     Args:
-        host (str): Database host
+        host (str): Database host (can include port as 'host:port')
         user (str): Database user
         password (str): Database password
         database (str): Database name
