@@ -1,7 +1,12 @@
 [project]
 name = "openemr-export"
 version = "0.1.0"
-description = "Add your description here"
+description = "A tool to export OpenEMR patient data to Excel files"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "pandas>=2.0.0",
+    "pymysql>=1.1.0",
+    "sqlalchemy>=2.0.0",
+    "openpyxl>=3.1.0",
+]
