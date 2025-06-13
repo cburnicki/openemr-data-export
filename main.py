@@ -10,6 +10,18 @@ import argparse
 from lib.export_utils import extract_data, connect_to_db, export_to_excel
 
 
+def empty_export_folder(folder='exports'):
+    if os.path.exists(folder):
+        for file in os.listdir(folder):
+            file_path = os.path.join(folder, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        print(f"Emptied export folder: {folder}")
+    else:
+        os.makedirs(folder)
+        print(f"Created export folder: {folder}")
+
+
 def main():
     """
     Main function to orchestrate the data export process.
@@ -30,6 +42,10 @@ def main():
     args = parser.parse_args()
     
     print("Starting OpenEMR data export...")
+    
+    # Empty the export folder before proceeding
+    empty_export_folder()
+    
     print(f"Connecting to database at {args.host}:{args.port}")
     
     # Start timing the export process

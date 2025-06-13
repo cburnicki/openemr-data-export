@@ -17,5 +17,3 @@ aws s3 rm "s3://$S3_BUCKET/" --recursive
 # Upload the new export file to S3
 aws s3 cp "$EXPORT_FILE" "s3://$S3_BUCKET/$(basename "$EXPORT_FILE")"
 
-# Delete the local export file (force without confirmation)
-rm -f "$EXPORT_FILE"
