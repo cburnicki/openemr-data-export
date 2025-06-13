@@ -69,7 +69,7 @@ def main():
             'encounters': extract_data(engine, 'form_encounter'),
             'clinical_notes': extract_data(engine, 'form_clinical_notes'),
             'SOAP': extract_data(engine, 'form_soap'),
-            'form_encounter_mapping': extract_data(engine, 'forms', include_cols=['encounter', 'form_name', 'form_id', 'pid']),
+            'form_encounter_mapping': extract_data(engine, 'forms', include_cols=['encounter', 'formdir', 'form_id', 'pid']),
         }
         
         # Export to Excel
