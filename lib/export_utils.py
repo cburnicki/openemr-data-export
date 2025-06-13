@@ -6,6 +6,8 @@ from datetime import datetime
 import pandas as pd
 from sqlalchemy import create_engine
 
+DEFAULT_OUTPUT_DIR="exports"
+
 
 def connect_to_db(host='localhost', user='openemr', password='openemr', database='openemr'):
     """
@@ -88,7 +90,7 @@ def drop_columns(df, columns_to_drop):
     return result_df
 
 
-def export_to_excel(dataframes, output_dir='exports'):
+def export_to_excel(dataframes, output_dir=DEFAULT_OUTPUT_DIR):
     """
     Export dataframes to Excel file
     
@@ -115,3 +117,15 @@ def export_to_excel(dataframes, output_dir='exports'):
             df.to_excel(writer, sheet_name=sheet_name, index=False)
     
     return filepath
+
+
+def empty_export_folder(folder=DEFAULT_OUTPUT_DIR):
+    if os.path.exists(folder):
+        for file in os.listdir(folder):
+            file_path = os.path.join(folder, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        print(f"Emptied export folder: {folder}")
+    else:
+        os.makedirs(folder)
+        print(f"Created export folder: {folder}")

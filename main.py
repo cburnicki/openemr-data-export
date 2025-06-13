@@ -7,19 +7,7 @@ This script exports patient data from an OpenEMR database to Excel files.
 import os
 import time
 import argparse
-from lib.export_utils import extract_data, connect_to_db, export_to_excel
-
-
-def empty_export_folder(folder='exports'):
-    if os.path.exists(folder):
-        for file in os.listdir(folder):
-            file_path = os.path.join(folder, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-        print(f"Emptied export folder: {folder}")
-    else:
-        os.makedirs(folder)
-        print(f"Created export folder: {folder}")
+from lib.export_utils import extract_data, connect_to_db, export_to_excel, empty_export_folder
 
 
 def main():
