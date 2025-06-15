@@ -65,6 +65,83 @@ def extract_data(engine, table_name, include_cols=None, drop_cols=None):
     return df
 
 
+
+def _get_list_options(engine, include_list_ids=None):
+    query = "SELECT list_id, option_id, title FROM list_options"
+    
+    if include_list_ids:
+        query += " WHERE list_id IN (\"{}\")".format("\", \"".join(map(str, include_list_ids)))
+    
+    df = pd.read_sql(query, engine)
+    return df
+
+
+def convert_list_option_ids_to_titles(engine, dataframes):
+
+    # Get list options
+    list_options_df = _get_list_options(engine, include_list_ids=['sexual_orientation', 'gender_identity'])
+    
+    if 'patient_data' in dataframes:
+        # Create a copy to avoid modifying the original
+        patient_data_df = dataframes['patient_data'].copy()
+        
+        # Rename the ID columns
+        patient_data_df = patient_data_df.rename(columns={
+            'sexual_orientation': 'sexual_orientation_id',
+            'gender_identity': 'gender_identity_id'
+        })
+        
+        # Merge for sexual orientation titles
+        sexual_orientation_merge = pd.merge(
+            patient_data_df, 
+            list_options_df.rename(columns={'title': 'sexual_orientation_title'}),
+            left_on='sexual_orientation_id', 
+            right_on='option_id', 
+            how='left'
+        )
+        
+        # Keep only the title column from the merge
+        patient_data_df['sexual_orientation_title'] = sexual_orientation_merge['sexual_orientation_title']
+        
+        # Merge for gender identity titles
+        gender_identity_merge = pd.merge(
+            patient_data_df,
+            list_options_df.rename(columns={'title': 'gender_identity_title'}),
+            left_on='gender_identity_id',
+            right_on='option_id',
+            how='left'
+        )
+        
+        # Keep only the title column from the merge
+        patient_data_df['gender_identity_title'] = gender_identity_merge['gender_identity_title']
+        
+        # Reorder columns to place title columns right after their corresponding ID columns
+        cols = list(patient_data_df.columns)
+        
+        # Find the positions of the ID columns
+        so_id_pos = cols.index('sexual_orientation_id')
+        gi_id_pos = cols.index('gender_identity_id')
+        
+        # Remove title columns from their current positions
+        cols.remove('sexual_orientation_title')
+        cols.remove('gender_identity_title')
+        
+        # Insert title columns right after their corresponding ID columns
+        # Insert gender_identity_title first to avoid affecting the index of sexual_orientation_id
+        cols.insert(gi_id_pos + 1, 'gender_identity_title')
+        cols.insert(so_id_pos + 1, 'sexual_orientation_title')
+        
+        # Reorder the DataFrame columns
+        patient_data_df = patient_data_df[cols]
+        
+        # Update the dataframes dictionary with the modified copy
+        dataframes['patient_data'] = patient_data_df
+    
+    return dataframes
+        
+
+
+
 def drop_columns(df, columns_to_drop):
     """
     Remove specified columns from a pandas DataFrame if they exist

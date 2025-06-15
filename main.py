@@ -7,7 +7,7 @@ This script exports patient data from an OpenEMR database to Excel files.
 import os
 import time
 import argparse
-from lib.export_utils import extract_data, connect_to_db, export_to_excel, empty_export_folder
+from lib.export_utils import extract_data, connect_to_db, export_to_excel, empty_export_folder, convert_list_option_ids_to_titles
 from lib.data_post_processor import convert_to_metric
 
 
@@ -75,10 +75,11 @@ def main():
         
         # Apply metric system conversions
         print("Converting values to metric system...")
-        metric_dataframes = convert_to_metric(dataframes)
+        convert_list_option_ids_to_titles(engine, dataframes)
+        convert_to_metric(dataframes)
         
         # Export to Excel
-        output_file = export_to_excel(metric_dataframes)
+        output_file = export_to_excel(dataframes)
         
         # Calculate and log the export duration
         end_time = time.time()

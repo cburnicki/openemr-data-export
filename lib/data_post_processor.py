@@ -17,7 +17,7 @@ def fahrenheit_to_celsius(value):
     return (value - 32) / 1.8
 
 
-def apply_converter(df, column, converter_func):
+def _apply_converter(df, column, converter_func):
     """
     Apply a converter function to a dataframe column if the column exists and values are not empty.
     
@@ -56,14 +56,15 @@ def convert_to_metric(dataframes):
         vitals_df = dataframes['vitals'].copy()
         
         # Apply each conversion
-        vitals_df = apply_converter(vitals_df, 'height', inches_to_cm)
-        vitals_df = apply_converter(vitals_df, 'weight', lbs_to_kg)
-        vitals_df = apply_converter(vitals_df, 'temperature', fahrenheit_to_celsius)
-        vitals_df = apply_converter(vitals_df, 'head_circ', inches_to_cm)
-        vitals_df = apply_converter(vitals_df, 'waist_circ', inches_to_cm)
+        vitals_df = _apply_converter(vitals_df, 'height', inches_to_cm)
+        vitals_df = _apply_converter(vitals_df, 'weight', lbs_to_kg)
+        vitals_df = _apply_converter(vitals_df, 'temperature', fahrenheit_to_celsius)
+        vitals_df = _apply_converter(vitals_df, 'head_circ', inches_to_cm)
+        vitals_df = _apply_converter(vitals_df, 'waist_circ', inches_to_cm)
         
         # Update the dataframes dictionary with the modified copy
         dataframes['vitals'] = vitals_df
     
     # Return the modified dataframes dictionary
     return dataframes
+
