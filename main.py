@@ -8,6 +8,7 @@ import os
 import time
 import argparse
 from lib.export_utils import extract_data, connect_to_db, export_to_excel, empty_export_folder
+from lib.data_post_processor import convert_to_metric
 
 
 def main():
@@ -72,8 +73,12 @@ def main():
             'form_encounter_mapping': extract_data(engine, 'forms', include_cols=['encounter', 'formdir', 'form_id', 'pid']),
         }
         
+        # Apply metric system conversions
+        print("Converting values to metric system...")
+        metric_dataframes = convert_to_metric(dataframes)
+        
         # Export to Excel
-        output_file = export_to_excel(dataframes)
+        output_file = export_to_excel(metric_dataframes)
         
         # Calculate and log the export duration
         end_time = time.time()
