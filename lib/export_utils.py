@@ -78,6 +78,8 @@ def _get_list_options(engine, include_list_ids=None):
 
 def convert_list_option_ids_to_titles(engine, dataframes):
 
+    print("Converting list option IDs to titles...")
+
     # Get list options
     list_options_df = _get_list_options(engine, include_list_ids=['sexual_orientation', 'gender_identity'])
     

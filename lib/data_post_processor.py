@@ -34,17 +34,18 @@ def _apply_converter(df, column, converter_func):
     
     result = df.copy()
     
-    # Create mask for non-null numeric values
+    # Create mask for non-null values
     mask = pd.notna(result[column])
     
     # Try to convert to numeric, ignoring errors
-    numeric_values = pd.to_numeric(result.loc[mask, column], errors='coerce')
-    numeric_mask = pd.notna(numeric_values)
+    result.loc[mask, column] = pd.to_numeric(result.loc[mask, column], errors='coerce')
+    
+    # Update mask to include only valid numeric values
+    mask = mask & pd.notna(result[column])
     
     # Apply conversion only to valid numeric values
-    if numeric_mask.any():
-        # Use proper chained indexing to avoid SettingWithCopyWarning
-        result.loc[mask.values & numeric_mask.values, column] = numeric_values[numeric_mask].apply(converter_func)
+    if mask.any():
+        result.loc[mask, column] = result.loc[mask, column].apply(converter_func)
     
     return result
 
