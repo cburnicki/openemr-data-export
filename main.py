@@ -53,7 +53,10 @@ def main():
         # Organize dataframes for export
         dataframes = {
             'patient_data': extract_data(engine, 'patient_data', include_cols=[
-                'pubpid', 
+                'pubpid',
+                'fname',
+                'mname',
+                'lname',
                 'DOB', 
                 'sex', 
                 'sexual_orientation', 
